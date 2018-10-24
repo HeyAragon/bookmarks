@@ -1,0 +1,47 @@
+
+
+Step1:切换到androidStudio Terminal 路径cd到项目根目录下，然后执行 gradlewAssembleRelease，打签名包
+
+Step2:去360加固，记住不要用360的V1签名。否则热修复会失效的，需要自己再签名，步骤如下：
+
+
+Step 3: zipalign对齐  优化apk
+
+
+	a.打开CMD，cd 进入Android SDK-> build-tools -> 25.+目录(大于25即可)
+
+	b.执行命令：zipalign -v 4 [需要执行对齐的apk地址] [align优化后apk存放目标地址以及名称]
+
+		例如:原apk地址：E:\test\test.apk   目标地址：E:\test\test_zipalign.apk
+
+		具体指令：zipalign -v 4 E:\test\test.apk E:\test\test_zipalign.apk
+
+
+
+Step 4:签名
+
+
+	a.打开CMD，cd 进入Android SDK-> build-tools -> 25.+ (大于25即可)->lib 目录
+
+	b.执行语句：
+		java -jar apksigner.jar sign           //执行签名操作
+ 
+		--ks 你的jks路径                       //jks签名证书路径
+
+		--ks-key-alias 你的alias               //生成jks时指定的
+		alias
+--ks-pass pass:你的密码           //KeyStore密码
+
+		--key-pass pass:你的密码               //签署者的密码，即生成jks时指定alias对应的密码
+
+                --out output.apk                       //输出路径
+
+		input.apk                              ////被签名的apk
+
+
+D:\sdk\build-tools\25.0.3\lib>java -jar apksigner.jar sign --ks E:\sjly_keystore\SjlyMarket.keystore --ks-key-alias SjlyMarket --ks-pass pass:dev.shouji.com.cnn
+ --key-pass pass:dev.shouji.com.cnn --out E:\jiagunov\resign\resign.apk E:\jiagunov\sjly_jiagu_align.apk
+
+Step 5:walle 命令行多渠道写入
+				
+java -jar walle-cli-all.jar batch -f E:\channel E:\jiagunov\resign\resign.apk E:jiagunov\qudao\
